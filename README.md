@@ -1,5 +1,5 @@
 # Shopicruit Task
-* This part of my application (task one) to the Shopify summer 2016 internship
+* This is part of my application (task one) to the Shopify summer 2016 internship
 * I decided to write task one in two languages namely Perl and Javascript
 
 ###[Task](https://www.shopify.com/careers/developer-intern-summer-2016-ea3921)

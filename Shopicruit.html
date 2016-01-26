@@ -1,0 +1,52 @@
+<html>
+   <head>
+      <title>Shopicruit Task</title>
+   </head>
+   <script>  
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          var response = JSON.parse(xhttp.responseText); 
+          var item_num = response.products.length;
+          var item_arr = [];
+          var keyboards_bought = 0; 
+          var computer_bought = 0; 
+          var total_cost = 0;
+          var total_grams = 0; 
+
+          for (var i = 0; i < item_num; i++) {
+              var item = response.products[i];
+              var computer = /computer/i;
+              var keyboard = /keyboard/i;
+
+              //Only consider computers and keyboards
+              if(computer.test(item.title)||keyboard.test(item.title)){
+                var variant_num = item.variants.length;
+                
+                for(var v = 0; v < variant_num; v++){
+                   item_arr.push({title: item.title, variant: item.variants[v].title ,grams: item.variants[v].grams, price: parseFloat(item.variants[v].price,10)});
+                }
+              }
+          }
+          //Order items in increasing by grams
+          var sortedby_grams = item_arr.sort(function(a, b){
+            return a.grams - b.grams;
+          });
+          i = 0; 
+          var items_bought = [];
+          var different_items_num = sortedby_grams.length; 
+
+          //Keep adding next lightest item until weight limit is reached to ensure maximum #items purchased
+          while(i < different_items_num && total_grams + sortedby_grams[i].grams < 100000){
+              items_bought.push(sortedby_grams[i]);
+              total_grams += sortedby_grams[i].grams;
+              total_cost += sortedby_grams[i].price;
+              i++;
+          }
+          document.write("You will have to carry "+items_bought.length+" item(s) which will weigh "+total_grams/1000+" kg and it will cost you "+Math.round(total_cost * 100) / 100+" dollars!");
+        }
+      };
+      xhttp.open("GET", "http://shopicruit.myshopify.com/products.json", true);
+      xhttp.send();
+   </script> 
+</html>
